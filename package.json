@@ -1,0 +1,13 @@
+{
+  "name": "offers-parse",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "better-sqlite3": "^11.0.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "scripts": {
+    "dmarket": "node dmarket.js",
+    "whitemarket": "node whitemarket.js"
+  }
+}
