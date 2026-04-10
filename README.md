@@ -27,7 +27,7 @@ cp .env.example .env   # fill in API keys
 
 ```bash
 # 1. Initialize databases first
-cd ../cs2_skins_trading_database && npm i && node offers_dmarket.js && node offers_whitemarket.js && cd ../offers_parse
+cd ../database && npm i && node offers_dmarket.js && node offers_whitemarket.js && cd ../offers_parse
 
 # 2. Make sure items catalog is populated
 # (items_parse daemons should have run at least once)
@@ -151,8 +151,8 @@ Single request → all items with min price and quantity.
 | `DMARKET_OFFERS_MAX_WAIT_MS` | `15000` | Max retry backoff (ms) |
 | `DMARKET_OFFERS_LOOP_SLEEP_MS` | `5000` | Sleep between batches (ms) |
 | `DMARKET_OFFERS_RESET_SLEEP_MS` | `60000` | Sleep after queue reset (ms) |
-| `DMARKET_ITEMS_DMARKET_DB_PATH` | `../cs2_skins_trading_database/items_dmarket.db` | Items queue DB |
-| `DMARKET_OFFERS_DMARKET_DB_PATH` | `../cs2_skins_trading_database/offers_dmarket.db` | Offers output DB |
+| `DMARKET_ITEMS_DMARKET_DB_PATH` | `../database/items_dmarket.db` | Items queue DB |
+| `DMARKET_OFFERS_DMARKET_DB_PATH` | `../database/offers_dmarket.db` | Offers output DB |
 
 ### WhiteMarket offers
 
@@ -171,18 +171,18 @@ Single request → all items with min price and quantity.
 | `WHITE_OFFERS_MAX_WAIT_MS` | `15000` | Max retry backoff (ms) |
 | `WHITE_OFFERS_LOOP_SLEEP_MS` | `1000` | Sleep between batches (ms) |
 | `WHITE_OFFERS_RESET_SLEEP_MS` | `60000` | Sleep after queue reset (ms) |
-| `WHITEMARKET_ITEMS_WHITEMARKET_DB_PATH` | `../cs2_skins_trading_database/items_whitemarket.db` | Items queue DB |
-| `WHITE_OFFERS_WHITEMARKET_DB_PATH` | `../cs2_skins_trading_database/offers_whitemarket.db` | Offers output DB |
+| `WHITEMARKET_ITEMS_WHITEMARKET_DB_PATH` | `../database/items_whitemarket.db` | Items queue DB |
+| `WHITE_OFFERS_WHITEMARKET_DB_PATH` | `../database/offers_whitemarket.db` | Offers output DB |
 
 ### Other markets
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `WAXPEER_DB_PATH` | `../cs2_skins_trading_database/offers_waxpeer.db` | Waxpeer DB path |
+| `WAXPEER_DB_PATH` | `../database/offers_waxpeer.db` | Waxpeer DB path |
 | `WAXPEER_LOOP_SLEEP_MS` | `300000` | Cycle interval (5 min) |
-| `BITSKINS_DB_PATH` | `../cs2_skins_trading_database/offers_bitskins.db` | BitSkins DB path |
+| `BITSKINS_DB_PATH` | `../database/offers_bitskins.db` | BitSkins DB path |
 | `BITSKINS_LOOP_SLEEP_MS` | `300000` | Cycle interval (5 min) |
-| `LOOTFARM_DB_PATH` | `../cs2_skins_trading_database/offers_lootfarm.db` | Loot.Farm DB path |
+| `LOOTFARM_DB_PATH` | `../database/offers_lootfarm.db` | Loot.Farm DB path |
 | `LOOTFARM_LOOP_SLEEP_MS` | `300000` | Cycle interval (5 min) |
 
 Skinport uses the same pattern via `prices_parse/` config.
@@ -207,20 +207,20 @@ pm2 logs dmarket-offers-daemon --lines 20
 pm2 logs whitemarket-offers-daemon --lines 20
 
 # Check offers count
-sqlite3 ../cs2_skins_trading_database/offers_dmarket.db "SELECT COUNT(DISTINCT name), COUNT(*) FROM offers_dmarket;"
-sqlite3 ../cs2_skins_trading_database/offers_whitemarket.db "SELECT COUNT(DISTINCT name), COUNT(*) FROM offers_whitemarket;"
+sqlite3 ../database/offers_dmarket.db "SELECT COUNT(DISTINCT name), COUNT(*) FROM offers_dmarket;"
+sqlite3 ../database/offers_whitemarket.db "SELECT COUNT(DISTINCT name), COUNT(*) FROM offers_whitemarket;"
 
 # Check parsing queue
-sqlite3 ../cs2_skins_trading_database/items_dmarket.db "SELECT SUM(offers_parsed=0) as pending, SUM(offers_parsed=1) as done FROM items_dmarket;"
+sqlite3 ../database/items_dmarket.db "SELECT SUM(offers_parsed=0) as pending, SUM(offers_parsed=1) as done FROM items_dmarket;"
 
 # Check DB size (should stay reasonable with auto_vacuum)
-ls -lh ../cs2_skins_trading_database/offers_*.db
+ls -lh ../database/offers_*.db
 
 # Check 429 errors
 pm2 logs whitemarket-offers-daemon --err --lines 50 | grep 429
 
 # Force re-parse all items
-sqlite3 ../cs2_skins_trading_database/items_dmarket.db "UPDATE items_dmarket SET offers_parsed=0;"
+sqlite3 ../database/items_dmarket.db "UPDATE items_dmarket SET offers_parsed=0;"
 ```
 
 ---
