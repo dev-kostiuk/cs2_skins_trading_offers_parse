@@ -184,8 +184,8 @@ Single request → all items with min price and quantity.
 | `BITSKINS_LOOP_SLEEP_MS` | `300000` | Cycle interval (5 min) |
 | `LOOTFARM_DB_PATH` | `../database/offers_lootfarm.db` | Loot.Farm DB path |
 | `LOOTFARM_LOOP_SLEEP_MS` | `300000` | Cycle interval (5 min) |
-
-Skinport uses the same pattern via `prices_parse/` config.
+| `SKINPORT_DB_PATH` | `../database/offers_skinport.db` | Skinport DB path |
+| `SKINPORT_LOOP_SLEEP_MS` | `300000` | Cycle interval (5 min) |
 
 ---
 
